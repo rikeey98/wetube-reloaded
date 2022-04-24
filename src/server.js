@@ -1,24 +1,25 @@
 import express from "express";
+import { process_params } from "express/lib/router";
 import morgan from "morgan";
 import globalRouter from "./routers/globalRouter";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
 
-const PORT = 4000;
-
 // create app
 const app = express();
-
-// config app
 const logger = morgan("combined");
+// config app
+
+app.set("view engine", "pug");
+app.set("views", process.cwd() + "/src" + "/views");
+
 app.use(logger);
+
+// for express understand bodies structure (when using post)
+app.use(express.urlencoded({extended: true}));
 
 app.use("/", globalRouter);
 app.use("/users", userRouter);
 app.use("/videos", videoRouter);
 
-// open app
-const handleListening = () => console.log(`Server listenting on port http://localhost:${PORT}`);
-
-app.listen(PORT, handleListening);
-
+export default app;
